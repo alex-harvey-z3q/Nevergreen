@@ -1,4 +1,4 @@
-$Version = Get-Version -Uri 'https://openvpn.net/vpn-server-resources/openvpn-connect-for-windows-change-log/' -Pattern 'Release notes for ((?:\d+\.)+\d+)'
+$Version = Get-Version -Uri 'https://openvpn.net/connect-docs/windows-release-notes.html' -Pattern '>((?:\d+\.)+\d+) \(\d+\)'
 
 $Releases = @(
     @{Architecture = 'x86'; Type = 'Msi'; Pattern = 'x86\.msi$'}
@@ -6,6 +6,6 @@ $Releases = @(
 )
 
 foreach ($Release in $Releases) {
-        $URL = Get-Link -Uri 'https://openvpn.net/client-connect-vpn-for-windows/' -MatchProperty href -Pattern $Release.Pattern
+        $URL = Get-Link -Uri 'https://openvpn.net/client/client-connect-vpn-for-windows/' -MatchProperty href -Pattern $Release.Pattern
         New-NevergreenApp -Name 'OpenVPNConnect' -Version $Version -Uri $URL -Architecture $Release.Architecture -Type $Release.Type
 }
