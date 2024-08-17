@@ -1,6 +1,6 @@
 . "$PSScriptRoot\ImportFunctions.ps1"
-
-Start-Transcript -Path "$env:temp\Nevergreen.log" -Force
+Remove-Item "$env:temp\Nevergreen.log" -ErrorAction Ignore
+Start-Transcript -Path "$env:temp\Nevergreen.log" -Force -UseMinimalHeader
 Clear-Host
 Write-Host "PowerShell version: $($PSVersionTable.PSVersion)"
 $Apps = Find-NevergreenApp
