@@ -65,7 +65,7 @@ Evergreen relies on API queries to obtain its data, and HTML scraping is not wel
 - Microsoft OpenJDK
 - Microsoft Power BI Desktop
 - Microsoft Power BI Report Builder
-- Microsoft Purview Information Protection
+- Microsoft Purview Information Protection Client
 - Microsoft SSMS
   - This is already in Evergreen but has a known issue against it where the feed is providing the build version rather than the release version most know it by.
 - Microsoft Sysinternals tools (all suites and individual tools)
