@@ -3,15 +3,17 @@ $Platforms = @(
     @{Architecture = 'x64'; Language = 'Neutral'; Pattern = 'AcrobatDCx64Upd\d{8,12}\.msp'}
 )
 
+$Headers = @{'accept' = '*/*'; 'accept-language' = 'en-GB,en;q=0.9,en-US;q=0.8'}
+
 foreach ($Platform in $Platforms) {
 
     $ReleaseURL = 'https://www.adobe.com/devnet-docs/acrobatetk/tools/ReleaseNotesDC/index.html'
     $SearchCount = 5
 
     do {
-        $ReleaseURL = Get-Link -Uri $ReleaseURL -Headers @{"accept-language"="en-GB,en;q=0.9,en-US;q=0.8"} -MatchProperty outerHTML -Pattern '>Next' -PrefixParent
+        $ReleaseURL = Get-Link -Uri $ReleaseURL -Headers $Headers -MatchProperty outerHTML -Pattern '>Next' -PrefixParent
 
-        $URL = Get-Link -Uri $ReleaseURL -Headers @{"accept-language"="en-GB,en;q=0.9,en-US;q=0.8"} -MatchProperty href -Pattern $Platform.Pattern
+        $URL = Get-Link -Uri $ReleaseURL -Headers $Headers -MatchProperty href -Pattern $Platform.Pattern
         if ($URL) {
             $Version = ($URL | Get-Version -Pattern '(\d{8,12}).+msp') -replace '(\d{2})(\d{3})(\d+)','$1.$2.$3'
             New-NevergreenApp -Name 'Adobe Acrobat' -Version $Version -Uri $URL -Architecture $Platform.Architecture -Language $Platform.Language -Type 'Msp'

@@ -1,4 +1,4 @@
-$URL32,$URL64,$URLARM64 = Get-Link -Uri 'https://helpx.adobe.com/uk/download-install/kb/creative-cloud-desktop-app-download.html' -MatchProperty href -Pattern 'win32','win64','winarm64' -Headers @{"accept"="*/*"}
+$URL32,$URL64,$URLARM64 = Get-Link -Uri 'https://helpx.adobe.com/uk/download-install/kb/creative-cloud-desktop-app-download.html' -MatchProperty href -Pattern 'win32','win64','winarm64' -Headers @{'accept' = '*/*'; 'accept-language' = 'en-GB,en;q=0.9,en-US;q=0.8'}
 
 $Version32,$Version64,$VersionARM64 = $URL32,$URL64,$URLARM64 | Get-Version -Pattern '((?:\d+\.)+\d+)(?!.+(?:\d+\.)+\d+)' -ReplaceWithDot
 
