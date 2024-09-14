@@ -30,13 +30,10 @@ foreach ($AppVersion in $AppVersions) {
 
         # Parse the version string as a SemVer
         try {
-            $SemVer   = Parse-SemVer -VersionString $VerString
-            $IsStable = $true  # Assuming no pre-release versions appear.
-
+            $VersionObj = [version]$VerString
             $VersionUrlPairs += [PSCustomObject]@{
-                Version  = $SemVer
-                Url      = $Url
-                IsStable = $IsStable
+                Version = $VersionObj
+                Url     = $Url
             }
         } catch {
             Write-Warning "Invalid version format '$VerString' for URL '$Url'"
@@ -49,19 +46,8 @@ foreach ($AppVersion in $AppVersions) {
         continue
     }
 
-    # Sort versions descending
-    $HighestVersionPair = $VersionUrlPairs | Sort-Object -Descending -Property `
-        @{ Expression = { $_.Version.Major } }, `
-        @{ Expression = { $_.Version.Minor } }, `
-        @{ Expression = { $_.Version.Patch } }, `
-        @{ Expression = { $_.IsStable } } | `
-        Select-Object -First 1
-
-    # Construct the version string
-    $VersionString = "$($HighestVersionPair.Version.Major)." +
-                     "$($HighestVersionPair.Version.Minor)." +
-                     "$($HighestVersionPair.Version.Patch)" +
-                     ($HighestVersionPair.Version.PreRelease ? "-$($HighestVersionPair.Version.PreRelease)" : '')
+    # Sort versions descending using [version] comparison
+    $HighestVersionPair = $VersionUrlPairs | Sort-Object -Property Version -Descending | Select-Object -First 1
 
     # Create the app with the highest version
     New-NevergreenApp -Name $($AppVersion.AppName) `
