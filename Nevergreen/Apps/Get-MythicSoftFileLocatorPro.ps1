@@ -16,7 +16,7 @@ $Version = Get-Version -Uri $ReleaseUrl -Pattern 'filelocator_(?:x64|x86)(?:_msi
 
 foreach ($App in $Apps) {
     try {
-        $URL = Get-Link -Uri $ReleaseUrl -MatchProperty href -Pattern $App.Pattern -PrefixDomain
+        $URL = (Get-Link -Uri $ReleaseUrl -MatchProperty href -Pattern $App.Pattern -PrefixDomain) -replace 'https?://www\.mythicsoft\.com/', ''
         New-NevergreenApp -Name $App.Name -Version $Version -Uri $URL -Architecture $App.Architecture -Type $App.Type
     }
     catch {
