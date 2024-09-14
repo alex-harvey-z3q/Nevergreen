@@ -17,7 +17,6 @@ foreach ($AppVersion in $AppVersions) {
     $URLs = Get-Link -Uri $ReleaseUrl -MatchProperty href -Pattern $AppVersion.URLPattern |
             Set-UriPrefix -Prefix 'https://hl7spy.ca/'
 
-    # If no URLs found, write a warning and continue
     if (-not $URLs) {
         Write-Warning "Could not find release for $($AppVersion.AppName) $($AppVersion.Type)"
         continue
@@ -28,45 +27,28 @@ foreach ($AppVersion in $AppVersions) {
     foreach ($Url in $URLs) {
         $VerString = Get-Version -String $Url
 
-        # Parse the version string as a SemVer
         try {
-            $SemVer   = Parse-SemVer -VersionString $VerString
-            $IsStable = $true  # Assuming no pre-release versions appear.
-
+            $VersionObj = [version]$VerString
             $VersionUrlPairs += [PSCustomObject]@{
-                Version  = $SemVer
-                Url      = $Url
-                IsStable = $IsStable
+                Version = $VersionObj
+                Url     = $Url
             }
         } catch {
             Write-Warning "Invalid version format '$VerString' for URL '$Url'"
         }
     }
 
-    # If no valid versions found, write a warning and continue
     if (-not $VersionUrlPairs) {
         Write-Warning "Could not extract valid versions for $($AppVersion.AppName) $($AppVersion.Type)"
         continue
     }
 
-    # Sort versions descending
-    $HighestVersionPair = $VersionUrlPairs | Sort-Object -Descending -Property `
-        @{ Expression = { $_.Version.Major } }, `
-        @{ Expression = { $_.Version.Minor } }, `
-        @{ Expression = { $_.Version.Patch } }, `
-        @{ Expression = { $_.IsStable } } | `
-        Select-Object -First 1
+    # Sort versions descending using [version] comparison
+    $HighestVersionPair = $VersionUrlPairs | Sort-Object -Property Version -Descending | Select-Object -First 1
 
-    # Construct the version string
-    $VersionString = "$($HighestVersionPair.Version.Major)." +
-                     "$($HighestVersionPair.Version.Minor)." +
-                     "$($HighestVersionPair.Version.Patch)" +
-                     ($HighestVersionPair.Version.PreRelease ? "-$($HighestVersionPair.Version.PreRelease)" : '')
-
-    # Create the app with the highest version
     New-NevergreenApp -Name $($AppVersion.AppName) `
                       -Architecture $Arch `
-                      -Version $VersionString `
+                      -Version $($HighestVersionPair.Version) `
                       -Uri $($HighestVersionPair.Url) `
                       -Type $($AppVersion.Type)
 }
