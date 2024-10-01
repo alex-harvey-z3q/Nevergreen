@@ -13,7 +13,7 @@ $Version = Get-Version -Uri $ReleaseUrl -Pattern 'R-(\d+\.\d+\.\d+)-win\.exe'
 
 foreach ($App in $Apps) {
     try {
-        $URL = Get-Link -Uri $ReleaseUrl -MatchProperty href -Pattern $App.Pattern -PrefixDomain
+        $URL = Get-Link -Uri $ReleaseUrl -MatchProperty href -Pattern $App.Pattern -PrefixParent
         New-NevergreenApp -Name $App.Name -Version $Version -Uri $URL -Architecture $App.Architecture -Type $App.Type
     }
     catch {
