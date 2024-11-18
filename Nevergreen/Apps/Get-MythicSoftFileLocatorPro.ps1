@@ -12,7 +12,7 @@ $Apps = @(
     @{Name = 'FileLocatorPro'; Architecture = 'x64'; Type = 'Msi'; Pattern = 'filelocator_x64_msi_\d+\.zip' }
 )
 
-$Version = Get-Version -Uri $ReleaseUrl -Pattern 'filelocator_(?:x(86|64)_msi_(\d+)\.zip|(\d+)\.exe)'  # \d+ represents a build number here, which the vendor uses as a version string.
+$Version = Get-Version -Uri $ReleaseUrl -Pattern 'filelocator_(?:x64|x86)(?:_msi)?_(\d+)\.(?:exe|zip)'  # \d+ represents a build number here, which the vendor uses as a version string.
 
 foreach ($App in $Apps) {
     try {
